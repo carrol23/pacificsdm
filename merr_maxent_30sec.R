@@ -430,24 +430,7 @@ pic_ext <- extent(pc_rpj)
 
 # ------------------- CROP PREDICTOR VARIABLES ------------------
 # get predictor variables for PIC region
-#pic_predictor <- projectRaster(stck, crs = pdc) # long processing 3 days (undertaken in QGIS as quicker alternative)
-
-# get stck reprojected in qgis
-setwd('C:/Data/niche-modelling/SDM_22/merremia/30sec/pic_crop')
-pic_datafiles = Sys.glob("*.tif")
-pic_predictor = stack()
-for (i in 1:NROW(pic_datafiles)){
-  tempraster = raster(pic_datafiles[i]) #iterate each file and store as temporary raster
-  pic_predictor = stack(pic_predictor, tempraster)
-}
-
-# get list of names from file
-r.ls <- (list.files(pattern = "tif$"))
-
-# rename stack with layer names
-names(pic_predictor) <- r.ls
-# check names
-names(pic_predictor)
+pic_predictor <- projectRaster(stck, crs = pdc) # long processing - alternative usage of GIS software is an option
 
 # crop reprojected rasters based on extent of pacific region shp
 pic_predictor <- crop(pic_predictor, pic_ext)
