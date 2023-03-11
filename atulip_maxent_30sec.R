@@ -3,27 +3,24 @@
 # reference material 3 - coordinate cleaner : https://cran.r-project.org/web/packages/CoordinateCleaner/vignettes/Cleaning_GBIF_data_with_CoordinateCleaner.html
 # global human footprint - https://sedac.ciesin.columbia.edu/data/set/wildareas-v3-2009-human-footprint 
 
-# INSTALL NECESSARY PACKAGES
-#install.packages("devtools")
+# INSTALL AND LOAD NECESSARY PACKAGES
+install.packages("devtools")
 library(devtools)
-## install_github("ropensci/CoordinateCleaner")
-
+# Coordinate Cleaner
+install_github("ropensci/CoordinateCleaner")
 library(CoordinateCleaner)
 
+pck_ls <- c('rgbif', 'rgdal', 'dismo', 'maps', 'maptools', 'ggplot', 'geodata', 'rJava', 'jsonlite', 'caret')
 # load required libraries
 library(rgbif)
-# library(rgdal)
+library(rgdal)
 library(maps)
 library(dismo) # ensure loaded well - maxent modelling package
 library(maptools)
 library(ggplot2)
-
-# install.packages('geodata')
 library(geodata)
 library(rJava)
-
 library(jsonlite)
-
 library(caret) # loads ggplot2 and lattice as required
 
 # ------ Set Working Directory --------
@@ -458,19 +455,25 @@ atulip_pic_test <- crop(atulip_pic_test, pic_ext)
 # Presence Only Models
 #predict the entire training dataset
 atulip_pred_wrld <- predict(maxent_model_wrld, pic_predictor, ext = pic_ext)
+writeRaster(atulip_pred_wrld, 'atulip_predicted_global.tif')
 
 atulip_pred <- predict(maxent_model, pic_predictor, ext=pic_ext)
+writeRaster(atulip_pred, 'atulip_predicted.tif')
 
 atulip_pred_nr <- predict(max_model_nr, pic_predictor, ext=pic_ext)
+writeRaster(atulip_pred_nr, 'atulip_predicted_nr.tif')
 
 # Presence and Absence Fitted Models
 # predict the entire dataset to Pacific region using nr data 
 atulip_prob_wrld <- predict(prob_model_wrld, pic_predictor, ext=pic_ext)
+writeRaster(atulip_prob_wrld, 'atulip_prob_wrld.tif')
 
 atulip_prob <- predict(prob_model, pic_predictor, ext=pic_ext)
+writeRaster(atulip_prob, 'atulip_prob.tif')
 
 # run nr model (native range occurrence fit to native range and predicted to pacific extent)
 atulip_nr_prob <- predict(prob_model_nr, pic_predictor, ext = pic_ext)
+writeRaster(atulip_prob_nr, 'atulip_prob_nr.tif')
 
 # setting color ramp
 clr <- RColorBrewer::brewer.pal(9, "YlOrRd")
@@ -496,7 +499,7 @@ plot(atulip_nr_prob, col=rdcrmp(10), main = "Pres/Abs NRP - 30s African Tulip Pr
 # remotes::install_github('adamlilith/enmSdm', dependencies=TRUE)
 library(enmSdm)
 
-# PRESENCE ABSENCE MODELS
+# ------------ PRESENCE ABSENCE MODELS ---------------
 # Pres/Abs NRP - African Tulip Probability for Pacific Region
 # (native range occurrence fit to native range and predicted to pacific extent)
 atulip_nr_prob_1 <- extract(atulip_nr_prob, atulip_pic_test)
@@ -526,7 +529,7 @@ contBoyce(pres = atulip_prob_wrld_1,
           contrast = atulip_prob_wrld_abs,
           na.rm = T)
 
-# --------------PRESENCE ONLY MODELS
+# -------------- PRESENCE ONLY MODELS ----------
 # global predictors and presence points
 atulip_pred_wrld_1 <- extract(atulip_pred_wrld, atulip_pic_test) # predicted presence values
 atulip_pred_wrld_abs <- extract(atulip_pred_wrld, atulip_bck_test) # predicted absence values
@@ -599,7 +602,6 @@ plot(ws.p, add = TRUE)
 # pres/abs native range model 
 plot(atulip_nr_prob, col=rdcrmp(10), ext = ws, main = "Pres/Abs NRP - African Tulip Probability for Samoa")
 plot(ws.p, add = TRUE)
-
 
 # -------- TONGA -------------
 # country level - Tonga
