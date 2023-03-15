@@ -1,5 +1,5 @@
 # Species Distribution Modelling - Invasive Weeds in the Pacific
-Species distribution models (maxent) for three invasive weeds across the Pacific region. The model utilises bioclim, topographic and terrestrial biome data as environmental predictors and occurence data sourced from GBIF direcrtly accessed in R through the RGBIF.
+Species distribution models (maxent) for three invasive weeds across the Pacific region. The model utilises bioclim, topographic and terrestrial biome data as environmental predictors and occurence data sourced from GBIF direcrtly accessed in R from R Studio through the RGBIF.
 
 Occurence or presence data is cleaned using the R package Coordinate Cleaner.
 
@@ -9,4 +9,4 @@ Maxent code for three species can be found in this repository:
 <ul><li> Devils ivy - Epipremnum aureum </li></ul>
 
 
-This repository is a part of a PhD research project undertaken at the Univeristy of Newcastle
+This repository is a part of a PhD research project undertaken at the Univeristy of Newcastle.
