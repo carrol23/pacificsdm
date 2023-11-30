@@ -1,6 +1,6 @@
-# ------ Set Working Directory --------
-setwd('C:/Data/niche-modelling/SDM_22/merremia/30sec/data')
+# ------ SET UP WORKSPACE----
 rm(list=ls()) # clean workspace
+options(java.parameters = "-Xmx16g")
 
 # install and load packages
 install.packages(c("dismo", "rgbif", "maps", "rJava", "tidyverse", "ggplot2", "raster","sp"))
@@ -15,6 +15,9 @@ library(rJava)
 library(rgbif)
 library(terra)
 library(tidyverse)
+
+# set working director
+setwd('C:/Data/niche-modelling/SDM_22/merremia/30sec/data')
 
 # read in occurrnence points that have been cleaned
 merr_occ = read.csv("merr_global_1.csv", sep = ',')
@@ -60,10 +63,8 @@ merr_nr_bck_train = merr_nr_bck[merr_nr_bck_group != 1,]
 plot(merr_bck, pch = 20, col = 'blue') # check globally generated background points
 plot(merr_nr_bck, pch = 20, col = 'red', add = TRUE)
 
-
-# ----------------LOAD IN PREDICTORS ---------------------------------
-# ------------MERGE DOWNLOADED VARIABLES---------------
-# load in raster datasets that have been saved
+# ----------------LOAD IN PREDICTORS ----------------------------------
+# load in raster datasets that have been saved from previous dataset from workding directory
 datafiles = Sys.glob("*.tif")
 stck = stack()
 
@@ -90,7 +91,6 @@ View(p_mat) # remove layers with high correlation > 0.8 (bio 12 and bio 16)
 # drop highly correlated predicts
 stck = dropLayer(stck, c("bio1.tif", "bio6.tif", "bio17.tif", "world_aspect.tif", 
                          "preciptn.tif", "tempavg.tif", "tempmin.tif", "bio13.tif"))
-
 
 # ------- GENERATE NATIVE RANGE PREDICTOR --------------------
 # generate extent from native range
@@ -170,14 +170,14 @@ plot(pc_rpj)
 pic_ext <- extent(pc_rpj)
 
 # ------------------- CROP PREDICTOR VARIABLES ------------------
-# get predictor variables for PIC region - already reprojected to PDC
+# get predictor variables for PIC region - already reprojected to PDC using QGIS
 setwd('C:/Data/niche-modelling/SDM_22/merremia/30sec/pic_crop2')
 pic_datafiles = Sys.glob("*.tif")
 pic_predictor = stack()
 
 for (i in 1:NROW(pic_datafiles)){
   tempraster = raster(pic_datafiles[i]) #iterate each file and store as temporary raster
-  tempraster <- crop(tempraster, pic_ext)
+  tempraster <- crop(tempraster, pic_ext) # crop the raster according to the extent
   pic_predictor = stack(pic_predictor, tempraster)
 }
 
@@ -212,7 +212,6 @@ plot(merr_predict_nr, col = rdcrmp(10), main = 'Native Range Predicted Suitabili
 maps::map(database = 'world', fill = FALSE, add = TRUE)
 writeRaster(merr_predict_nr, 'merremia_predicted_nr2.tif')
 
-
 # EVALUATION
 # -------- BOYCE INDEX -------- 
 # run boyce index for model evaluation
@@ -236,7 +235,7 @@ merr_prob_abs <- raster::extract(merr_predict, merr_bck_pic)
 merr_gb_cont <- evalContBoyce(pres = merr_prob_pres, 
           contrast = merr_prob_abs,
           na.rm = T)
-merr_gb_cont #0.961879 #0.9036886
+merr_gb_cont 
 
 # native range presence and predictor
 merr_prob_pres_nr <- raster::extract(merr_predict_nr, merr_df_pic)
@@ -244,3 +243,4 @@ merr_prob_abs_nr <- raster::extract(merr_predict_nr, merr_bck_pic)
 merr_nr_cont <- evalContBoyce(pres = merr_prob_pres_nr, 
           contrast = merr_prob_abs_nr,
           na.rm = T)
+merr_nr_cont
