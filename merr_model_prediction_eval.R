@@ -3,7 +3,7 @@ setwd('C:/Data/niche-modelling/SDM_22/merremia/30sec/data')
 rm(list=ls()) # clean workspace
 
 # install and load packages
-install.packages(c("dismo", "rgbif", "maps", "rJava", "tidyverse", "ggplot2", "raster","sp", "CoordinateCleaner"))
+install.packages(c("dismo", "rgbif", "maps", "rJava", "tidyverse", "ggplot2", "raster","sp"))
 library(dismo)
 library(maps)
 library(ggplot2)
@@ -15,7 +15,6 @@ library(rJava)
 library(rgbif)
 library(terra)
 library(tidyverse)
-library(CoordinateCleaner)
 
 # read in occurrnence points that have been cleaned
 merr_occ = read.csv("merr_global_1.csv", sep = ',')
@@ -117,14 +116,13 @@ plot(nr_predictor)
 # PRES ONLY MODELS
  # Global range model
 model <- maxent(stck, merr_train, factor = "biome.tif")
-# NRP
-# model_nrp <- maxent(stck, nr_train, factor = "biome.tif")
+
 # Native range model
 nr_model <- maxent(nr_predictor, nr_train, factor = "biome.tif")
 
 par(mfrow = c(1,2))
 plot(model, main = "Presence Only Global Merremia Maxent Model")
-#plot(model_nrp, main = "Pres Only Native Range Occurrence Model")
+
 plot(nr_model, main = "Pres Only Native Range Restricted Model")
 
 # run response curve
@@ -203,7 +201,7 @@ rdcl <- RColorBrewer::brewer.pal(9, 'Reds')
 crmp <- colorRampPalette(clr)
 rdcrmp <- colorRampPalette(rdcl)
 
-#par(mfrow=c(2,3))
+# set to plot and download resulting model prediction
 par(mfrow=c(1,2))
 # plot predicted model - presence only models
 plot(merr_predict, col = rdcrmp(10), main = 'Global Predicted Suitability for Merremia - Pres Only')
@@ -216,10 +214,10 @@ writeRaster(merr_predict_nr, 'merremia_predicted_nr2.tif')
 
 
 # EVALUATION
-# ----------------------------- BOYCE INDEX --------------------------#
+# -------- BOYCE INDEX -------- 
 # run boyce index for model evaluation
-# remotes::install_github('adamlilith/enmSdm', dependencies=TRUE)
-library(enmSdm)
+install.packages('enmSdmX')
+library(enmSdmX)
 
 # CREATE PRESENCE POINT DATA
 merr_df_pic <- spTransform(merr_df, crs(pdc))
@@ -231,22 +229,18 @@ merr_df_pic <- crop(merr_df_pic, pic_ext)
 merr_bck_pic = randomPoints(pic_predictor, n = 150, p = merr_df_pic, ext = pic_ext, extf = 1.1)
 merr_bck_pic = SpatialPoints(merr_bck_pic, crs(pic_predictor))
 
-# -------- BOYCE INDEX
-# PRESENCE  MODEL PREDICTION
-# Pres - Merremia Probability for Pacific Region
 # Global presence only
 merr_prob_pres <- raster::extract(merr_predict, merr_df_pic)
 # crop testing background absence points
 merr_prob_abs <- raster::extract(merr_predict, merr_bck_pic)
-merr_gb_cont <- contBoyce(pres = merr_prob_pres, 
+merr_gb_cont <- evalContBoyce(pres = merr_prob_pres, 
           contrast = merr_prob_abs,
           na.rm = T)
-merr_gb_cont
+merr_gb_cont #0.961879 #0.9036886
 
 # native range presence and predictor
 merr_prob_pres_nr <- raster::extract(merr_predict_nr, merr_df_pic)
 merr_prob_abs_nr <- raster::extract(merr_predict_nr, merr_bck_pic)
-merr_nr_cont <- contBoyce(pres = merr_prob_pres_nr, 
+merr_nr_cont <- evalContBoyce(pres = merr_prob_pres_nr, 
           contrast = merr_prob_abs_nr,
           na.rm = T)
-merr_nr_cont
