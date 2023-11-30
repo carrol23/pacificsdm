@@ -1,9 +1,8 @@
 #  ---------------------SDM ENVIRONMETNAL PREDICTORS DATA  -------------------------
 # 1 download data from worldclim, biome and soil data
 # 2 clean and merge datasets
-# 3 perform cleaning based on coordinate cleaner
-# 4 create global and native range dataset of occurrence data
-# 5 export occurrence data
+# 3 run pearsons correlation to drop variables
+# 4 write predictors to folder
 
 # ------ Set Working Directory --------
 setwd('C:/Data/niche-modelling/SDM_22/merremia/30sec/data')
@@ -11,15 +10,12 @@ setwd('C:/Data/niche-modelling/SDM_22/merremia/30sec/data')
 rm(list=ls()) # clean workspace
 
 # ---------------- INSTALL PACKAGES -------------
-install.packages(c('dismo', 'rgbif', 'coordinateCleaner', 'sp', 'maps', 'tidyverse', 'ggplot2', 'geodata'))
+install.packages(c('dismo', 'sp', 'maps', 'tidyverse', 'ggplot2', 'geodata'))
 library(dismo)
 library(maps)
 library(ggplot2)
 library(sp)
-library(rgbif)
 library(tidyverse)
-library(CoordinateCleaner)
-
 
 # ------- Access and Download Environmental Data ----------
 # -------------- WORLDCLIM DATA -------------
@@ -29,8 +25,6 @@ currentEnv = worldclim_global(var = "bio", res = 0.5, path = ".") # download 0.5
 
 # convert spatraster to raster
 currentEnv.ras <- as(currentEnv, "Raster")
-
-
 
 # rename rasterstack variables
 names(currentEnv.ras) <- c("bio1", "bio2", "bio3", "bio4", "bio5", "bio6", "bio7", "bio8",
@@ -105,13 +99,13 @@ library(sdmpredictors)
 
 # run correlation co-efficient
 p_mat <- pearson_correlation_matrix(stck, same_mask = FALSE)
-View(p_mat) # remove layers with high correlation > 0.8 (bio 12 and bio 16)
+View(p_mat) # remove one set of predictors that high correlation > 0.8 
 
-# drop highly correlated predicts
+# drop highly correlated predictors
 stck = dropLayer(stck, c("bio1.tif", "bio6.tif", "bio17.tif", "world_aspect.tif", 
                          "preciptn.tif", "tempavg.tif", "tempmin.tif", "bio13.tif"))
 
-# ------- GENERATE NATIVE RANGE PREDICTOR --------------------
+# --------- GENERATE NATIVE RANGE PREDICTOR --------------------
 # generate extent from native range
 # Split occurence data within defined Native Range
 nr <- vect("C:/Data/niche-modelling/SDM_22/merremia/30sec/nr_merr.shp")
@@ -128,4 +122,8 @@ ext_nr <- raster::extent(nr_shp)
 nr_predictor <- crop(stck, ext_nr, snap = 'near', datatype = NULL) # outputs raster brick
 names(nr_predictor)
 
-plot(nr_predictor)
+# write the native range predictors to file
+# change wd to native range data folder
+setwd = "C:/Data/niche-modelling/SDM_22/merremia/30sec/nr_data"
+writeRaster(stack(nr_predictor), names(nr_predictor), bylayer = TRUE,
+            format = 'GTiff', overwrite = TRUE)
