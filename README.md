@@ -1,6 +1,6 @@
 
 # Species Distribution Modelling - Invasive Weeds in the Pacific
-Species distribution models (maxent) for three invasive weeds across the Pacific region. The model utilises worldclim variables topographic, FAO global soil organic carbon (GSOC), and terrestrial biome data as environmental predictors and occurence data sourced from GBIF directly accessed in R from R Studio through the RGBIF package.
+Species distribution models (maxent) for three invasive weeds across the Pacific region. The model utilises worldclim variables topographic, FAO global soil organic carbon (GSOC) and the 2019 Copernicus landcover dataset as environmental predictors and occurence data sourced from GBIF directly accessed in R from R Studio through the RGBIF package.
 
 Occurence or presence data is cleaned using the R package Coordinate Cleaner.
 
