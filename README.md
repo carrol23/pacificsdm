@@ -5,9 +5,9 @@ Species distribution models (maxent) for three invasive weeds across the Pacific
 Occurence or presence data is cleaned using the R package Coordinate Cleaner.
 
 The main code has been published here in three main scripts and is reusable based on the species of study:
-1. Download species presence data (example species Merremia), clean and save
-2. Download environmental predictors/variables
-3. Train and test Maxent model and run evaluation (AUC and CBI)
+1. <a href = "https://github.com/carrol23/pacificsdm/blob/main/merr_occurence_data_download.R">Download species presence data (example species Merremia), clean and save </a>
+2. <a href = "https://github.com/carrol23/pacificsdm/blob/main/merr_predictor_data_download.R">Download environmental predictors/variables </a>
+3. <a href = "https://github.com/carrol23/pacificsdm/blob/main/merr_model_prediction_eval.R"> Train and test Maxent model and run evaluation (AUC and CBI) </a>
 
 
 The scripts have been updated as packages such as maptools, rgdal and enmsdm have been deprecated. Updated on the 30th of November 2023.
