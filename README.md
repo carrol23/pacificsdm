@@ -12,4 +12,4 @@ The main code has been published here in three main scripts and is reusable base
 
 The scripts have been updated as packages such as maptools, rgdal and enmsdm have been deprecated. Updated on the 30th of November 2023.
 
-This repository is a part of a PhD research project undertaken at the Univeristy of Newcastle.
+This repository is a part of a PhD research project undertaken at the Univeristy of Newcastle with funding support from SPREP MISCCAP project.
