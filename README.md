@@ -6,7 +6,7 @@ Occurence or presence data is cleaned using the R package Coordinate Cleaner.
 
 The main code has been published here in four main scripts and is reusable based on the species of study:
 1. download <a href = https://github.com/carrol23/pacificsdm/blob/main/occ_data.R> species occurence data (and data cleaning)</a>
-2. download <a href = https://github.com/carrol23/pacificsdm/blob/main/env_data.R>'environmental covariates (env predictors)</a>
+2. download <a href = https://github.com/carrol23/pacificsdm/blob/main/env_data.R>environmental covariates (env predictors)</a>
 3. sdm <a href = https://github.com/carrol23/pacificsdm/blob/main/sdm_data_preprocess.R> data preprocessing </a>
 4. sdm <a href = https://github.com/carrol23/pacificsdm/blob/main/sdm_model.R>  model fit, train and evaluation </a>
 
